@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can AI Hire Fairly? — Fairness by Design</title>
+<meta name="description" content="An interactive, open-source explainer on Bayesian cumulative advantage, the Matthew Effect and Simpson's Paradox in automated recruitment — plus a free CV fairness checker.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232B4BDF'/%3E%3Cpath d='M9 21l7-10 7 10' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav class="nav" id="nav">
+  <a class="nav-logo" href="#hero">
+    <svg viewBox="0 0 32 32" width="26" height="26"><rect width="32" height="32" rx="7" fill="#2B4BDF"/><path d="M9 21l7-10 7 10" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Fairness by Design</span>
+  </a>
+  <div class="nav-links">
+    <a href="#bayes" data-i18n="nav.bayes">Bayes</a>
+    <a href="#matthew" data-i18n="nav.matthew">Matthew</a>
+    <a href="#simpson" data-i18n="nav.simpson">Simpson</a>
+    <a href="#governance" data-i18n="nav.gov">Governance</a>
+    <a href="#cv" data-i18n="nav.cv">CV Checker</a>
+    <a href="#builder" data-i18n="nav.builder">CV Builder</a>
+    <button class="lang-toggle" id="langToggle" aria-label="Switch language">中文</button>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero section" id="hero">
+  <div class="hero-inner">
+    <p class="hero-kicker reveal" data-i18n="hero.kicker">PSP405TC · Ethics, Privacy &amp; AI in Society</p>
+    <h1 class="hero-title reveal"><span data-i18n="hero.title1">Can AI</span><br><span data-i18n="hero.title2">Hire Fairly?</span></h1>
+    <p class="hero-sub reveal" data-i18n="hero.sub">Fairness is not a property an algorithm possesses. It is a property a hiring system <em>earns</em> — through the rules it writes, the numbers it publishes, and the appeals it honours.</p>
+    <div class="hero-cta reveal">
+      <a class="btn btn-primary" href="#bayes" data-i18n="hero.cta1">Start exploring</a>
+      <a class="btn btn-ghost" href="#cv" data-i18n="hero.cta2">Check my CV →</a>
+    </div>
+    <ul class="hero-chips reveal">
+      <li data-i18n="hero.chip1">100% free</li>
+      <li data-i18n="hero.chip2">Open source</li>
+      <li data-i18n="hero.chip3">No sign-up</li>
+      <li data-i18n="hero.chip4">Nothing stored</li>
+    </ul>
+    <div class="hero-scan reveal">
+      <p class="scan-hint" data-i18n="hero.scanHint">👆 Tap a CV — see what the machine sees</p>
+      <div class="scan-cards" id="scanCards">
+        <button class="scan-card" data-flag="1"><span class="scan-avatar"></span><span class="scan-lines"></span><span class="scan-beam"></span><span class="scan-verdict"></span></button>
+        <button class="scan-card" data-flag="2"><span class="scan-avatar"></span><span class="scan-lines"></span><span class="scan-beam"></span><span class="scan-verdict"></span></button>
+        <button class="scan-card" data-flag="3"><span class="scan-avatar"></span><span class="scan-lines"></span><span class="scan-beam"></span><span class="scan-verdict"></span></button>
+        <button class="scan-card" data-flag="4"><span class="scan-avatar"></span><span class="scan-lines"></span><span class="scan-beam"></span><span class="scan-verdict"></span></button>
+        <button class="scan-card" data-flag="5"><span class="scan-avatar"></span><span class="scan-lines"></span><span class="scan-beam"></span><span class="scan-verdict"></span></button>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true"></div>
+</header>
+
+<!-- ============ 01 BAYES ============ -->
+<section class="section" id="bayes">
+  <div class="section-head reveal">
+    <span class="section-num">01</span>
+    <h2 data-i18n="bayes.title">The pool is never neutral</h2>
+    <p class="section-lede" data-i18n="bayes.lede">Bayesian reasoning shows how small early advantages compound: every positive signal raises the posterior probability of success — again and again, until early luck starts to look like talent.</p>
+  </div>
+  <div class="panel reveal" id="bayesLab">
+    <div class="panel-label" data-i18n="bayes.lab">Interactive · Watch a prior become a verdict</div>
+    <div class="bayes-top">
+      <div class="bayes-gauge">
+        <svg viewBox="0 0 200 120" class="gauge-svg" aria-hidden="true">
+          <path d="M20 110 A 80 80 0 0 1 180 110" fill="none" stroke="#E8EAF2" stroke-width="14" stroke-linecap="round"/>
+          <path id="gaugeArc" d="M20 110 A 80 80 0 0 1 180 110" fill="none" stroke="#2B4BDF" stroke-width="14" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+        </svg>
+        <div class="gauge-value"><span id="posteriorVal">5</span>%</div>
+        <div class="gauge-caption" data-i18n="bayes.gaugeCap">P(selected · signals so far)</div>
+      </div>
+      <div class="bayes-formula">
+        <div class="formula-line">P(H|E) ∝ P(E|H) × P(H)</div>
+        <p id="bayesNarrative" data-i18n="bayes.narrativeStart">A 10-year-old opens the posterior at 5%. Tap an early advantage to update the evidence.</p>
+      </div>
+    </div>
+    <div class="bayes-buttons" id="bayesButtons">
+      <button class="evidence-btn" data-lr="3.0" data-i18n="bayes.ev1">💻 Family computer</button>
+      <button class="evidence-btn" data-lr="2.5" data-i18n="bayes.ev2">⌨️ Coding before 12</button>
+      <button class="evidence-btn" data-lr="2.0" data-i18n="bayes.ev3">🏆 Science award at 16</button>
+      <button class="evidence-btn" data-lr="1.8" data-i18n="bayes.ev4">🏫 Well-funded school</button>
+      <button class="evidence-btn reset" id="bayesReset" data-i18n="bayes.reset">↺ Reset</button>
+    </div>
+    <p class="panel-note" data-i18n="bayes.note">No single signal decides anything. Together they compound — which is exactly why a screening model trained on "past successful hires" reads accumulated privilege as merit.</p>
+  </div>
+</section>
+
+<!-- ============ 02 MATTHEW ============ -->
+<section class="section" id="matthew">
+  <div class="section-head reveal">
+    <span class="section-num">02</span>
+    <h2 data-i18n="matthew.title">Rules manufacture "talent"</h2>
+    <p class="section-lede" data-i18n="matthew.lede">Canadian youth hockey groups children by calendar year, cut-off 1 January. At ten, eleven months is height, weight and strength. Scouts pick the visibly stronger — who get better coaching, more ice time, elite competition. The gap compounds until it looks like natural talent: the Matthew Effect, manufactured by a grouping rule.</p>
+  </div>
+  <div class="panel reveal" id="matthewLab">
+    <div class="panel-label" data-i18n="matthew.lab">Interactive · Drag your birth month</div>
+    <div class="matthew-grid">
+      <div class="matthew-slider-box">
+        <label class="slider-caption" for="monthSlider" data-i18n="matthew.sliderCap">Birth month (cohort cut-off: Jan 1)</label>
+        <input type="range" id="monthSlider" min="1" max="12" value="1" step="1">
+        <div class="month-ticks"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+        <div class="matthew-readout">
+          <div class="readout-item">
+            <span class="readout-num" id="selProb">23%</span>
+            <span class="readout-label" data-i18n="matthew.probLabel">chance of being scouted at tryouts</span>
+          </div>
+          <div class="readout-item">
+            <span class="readout-num" id="selRatio">4.6×</span>
+            <span class="readout-label" data-i18n="matthew.ratioLabel">vs. a December-born teammate</span>
+          </div>
+        </div>
+      </div>
+      <div class="matthew-roster">
+        <div class="slider-caption" data-i18n="matthew.rosterCap">A real elite-team roster, by birth month</div>
+        <div class="roster-chart" id="rosterChart" aria-hidden="true"></div>
+        <p class="panel-note" data-i18n="matthew.note">The same logic runs inside résumé screening: "gap year" penalties, degree-tier filters and experience thresholds are all grouping rules — and the more “objective” they look, the easier it is to misread manufactured gaps as ability gaps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 SIMPSON ============ -->
+<section class="section" id="simpson">
+  <div class="section-head reveal">
+    <span class="section-num">03</span>
+    <h2 data-i18n="simpson.title">Numbers can lie both ways</h2>
+    <p class="section-lede" data-i18n="simpson.lede">In 1973, Berkeley's graduate school admitted 44% of men and 35% of women — and the cold aggregate nearly branded the university discriminatory. Broken down by department, most admitted women at equal or higher rates: women had simply applied to the most competitive departments. Simpson's Paradox.</p>
+  </div>
+  <div class="panel reveal" id="simpsonLab">
+    <div class="panel-label" data-i18n="simpson.lab">Interactive · Toggle the lens</div>
+    <div class="toggle-row" role="tablist">
+      <button class="toggle-btn active" id="viewAggregate" data-i18n="simpson.viewAgg">Aggregate view</button>
+      <button class="toggle-btn" id="viewDept" data-i18n="simpson.viewDept">By department</button>
+    </div>
+    <div class="chart-box" id="simpsonChart"></div>
+    <div class="chart-legend">
+      <span class="legend-dot dot-m"></span><span data-i18n="simpson.legendM">Men</span>
+      <span class="legend-dot dot-w"></span><span data-i18n="simpson.legendW">Women</span>
+    </div>
+    <p class="panel-note" id="simpsonNote" data-i18n="simpson.noteAgg">One aggregate number, one accusation. Flip the view to see what it hid.</p>
+    <p class="panel-note" data-i18n="simpson.note2">The numbers were never just numbers: applicants experience the aggregate as a verdict on their lives. Presentation is part of fairness — stratified rates, base rates, and plain-language context.</p>
+  </div>
+</section>
+
+<!-- ============ 04 GOVERNANCE ============ -->
+<section class="section" id="governance">
+  <div class="section-head reveal">
+    <span class="section-num">04</span>
+    <h2 data-i18n="gov.title">Governance by design: warmth in automation</h2>
+    <p class="section-lede" data-i18n="gov.lede">If the gap cannot be fully eliminated, governance must intervene — not with one grand fix, but at three complementary levels.</p>
+  </div>
+
+  <div class="case-callout reveal">
+    <p class="case-quote" data-i18n="gov.case">In 2024, a deaf Native American applicant alleged that HireVue garbled her answers, the employer refused her requested captioning, and the interview closed with an AI verdict to “improve communication skills”. The system did not merely miss her disability — it delivered a cold judgement that wounded her dignity.</p>
+    <p class="case-cap" data-i18n="gov.caseCap">Automated decisions are experienced as person-to-person verdicts. Warmth is not soft decoration.</p>
+  </div>
+
+  <div class="gov-progress reveal">
+    <span class="gov-progress-label" id="govCount">0 / 9</span>
+    <div class="gov-progress-track"><div class="gov-progress-bar" id="govBar"></div></div>
+  </div>
+  <div class="gov-cards reveal" id="govCards">
+    <div class="gov-card">
+      <div class="gov-icon">🛠️</div>
+      <h3 data-i18n="gov.t.title">Technical</h3>
+      <ul>
+        <li data-i18n="gov.t.i1">Captions and alternative assessment channels</li>
+        <li data-i18n="gov.t.i2">Human review for disabled and accented candidates</li>
+        <li data-i18n="gov.t.i3">Fairness audits of proxies and thresholds</li>
+      </ul>
+    </div>
+    <div class="gov-card">
+      <div class="gov-icon">💬</div>
+      <h3 data-i18n="gov.e.title">Expressive</h3>
+      <ul>
+        <li data-i18n="gov.e.i1">Publish stratified rates with base rates and uncertainty</li>
+        <li data-i18n="gov.e.i2">Plain-language explanation of what the number does — and does not — mean</li>
+        <li data-i18n="gov.e.i3">Rejection reasons that preserve self-respect: truthful without cruelty</li>
+      </ul>
+    </div>
+    <div class="gov-card">
+      <div class="gov-icon">🏛️</div>
+      <h3 data-i18n="gov.i.title">Institutional</h3>
+      <ul>
+        <li data-i18n="gov.i.i1">Accommodation request processes</li>
+        <li data-i18n="gov.i.i2">Appeal routes backed by human review</li>
+        <li data-i18n="gov.i.i3">Transparent, regularly published audits</li>
+      </ul>
+    </div>
+  </div>
+  <p class="panel-note gov-note reveal" data-i18n="gov.note">This is not only fairness but human flourishing: giving those without early preparation a stage to shine, and protecting the vulnerable from careless harm. Progress is not only technological — it is also the inclusion between people.</p>
+</section>
+
+<!-- ============ 05 CV CHECKER ============ -->
+<section class="section" id="cv">
+  <div class="section-head reveal">
+    <span class="section-num">05</span>
+    <h2 data-i18n="cv.title">Will a screen judge you fairly?</h2>
+    <p class="section-lede" data-i18n="cv.lede">Now turn the ideas into a tool. Upload your CV and our AI — running the exact fairness lenses from this page — will tell you how an automated screening system might misread it, and what to change before you hit “submit”.</p>
+  </div>
+  <div class="panel reveal" id="cvLab">
+    <ul class="trust-row">
+      <li>🆓 <span data-i18n="cv.trust1">Free forever</span></li>
+      <li>📖 <span data-i18n="cv.trust2">Open source</span></li>
+      <li>🚫 <span data-i18n="cv.trust3">No sign-up</span></li>
+      <li>🔒 <span data-i18n="cv.trust4">Nothing stored — your file is parsed in your browser, only text is analysed, never saved</span></li>
+    </ul>
+
+    <div class="cv-tabs" role="tablist">
+      <button class="cv-tab active" id="tabCheck" data-i18n="cv.tabCheck">Check my CV</button>
+      <button class="cv-tab" id="tabAsk" data-i18n="cv.tabAsk">Ask the AI</button>
+    </div>
+
+    <!-- CV check tab -->
+    <div class="cv-tabpane" id="paneCheck">
+      <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="Upload CV">
+        <input type="file" id="cvFile" accept=".pdf,.docx,.txt,.md,text/plain" hidden>
+        <div class="upload-icon" aria-hidden="true">📄</div>
+        <p class="upload-main" data-i18n="cv.dropMain">Drop your CV here, or click to choose a file</p>
+        <p class="upload-sub" data-i18n="cv.dropSub">PDF · DOCX · TXT · MD — parsed locally in your browser</p>
+      </div>
+      <div class="or-divider"><span data-i18n="cv.or">or paste text</span></div>
+      <textarea id="cvText" rows="6" data-i18n-placeholder="cv.pasteHolder" placeholder="Paste your CV text here…"></textarea>
+      <div class="char-counter" id="charCounter" aria-live="polite"></div>
+      <label class="privacy-check">
+        <input type="checkbox" id="privacyOk">
+        <span data-i18n="cv.privacyCheck">I have removed my name, phone, address and other personal identifiers. I understand this tool is educational and its suggestions are not professional advice.</span>
+      </label>
+      <button class="btn btn-primary btn-wide" id="cvSubmit" disabled data-i18n="cv.submit">Analyse my CV</button>
+
+      <div class="cv-result" id="cvResult" hidden>
+        <div class="result-head">
+          <span class="result-badge" id="riskBadge"></span>
+          <p id="resultSummary"></p>
+        </div>
+        <div class="findings" id="findings"></div>
+        <p class="panel-note" data-i18n="cv.disclaimer">Suggestions are generated by AI for education only — always verify against the actual job description and local law.</p>
+      </div>
+      <div class="cv-status" id="cvStatus" hidden></div>
+    </div>
+
+    <!-- Ask tab -->
+    <div class="cv-tabpane" id="paneAsk" hidden>
+      <div class="preset-row" id="presetRow"></div>
+      <div class="ask-row">
+        <input type="text" id="askInput" data-i18n-placeholder="cv.askHolder" placeholder="Ask anything about AI hiring fairness…">
+        <button class="btn btn-primary" id="askSubmit" data-i18n="cv.askBtn">Ask</button>
+      </div>
+      <div class="ask-answer" id="askAnswer" hidden></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 CV BUILDER ============ -->
+<section class="section" id="builder">
+  <div class="section-head reveal">
+    <span class="section-num">06</span>
+    <h2 data-i18n="builder.title">Build a fair, clean CV</h2>
+    <p class="section-lede" data-i18n="builder.lede">Write your story into the form — the preview updates as you type. Download it as an editable Word (.docx) file: the left side holds a photo slot, the right side stays blank for your name and contact details, so you decide what to reveal.</p>
+  </div>
+
+  <div class="panel reveal" id="builderLab">
+    <div class="builder-grid">
+      <!-- form -->
+      <div class="builder-form">
+        <label class="f-label" for="bObjective" data-i18n="builder.objLabel">Career objective</label>
+        <textarea id="bObjective" rows="3" data-i18n-placeholder="builder.objHolder" placeholder="What role are you aiming for, and why?"></textarea>
+
+        <div class="f-head">
+          <span class="f-label" data-i18n="builder.expLabel">Work experience</span>
+          <button class="add-btn" id="addExp" data-i18n="builder.add">＋ Add</button>
+        </div>
+        <div id="expList"></div>
+
+        <div class="f-head">
+          <span class="f-label" data-i18n="builder.eduLabel">Education</span>
+          <button class="add-btn" id="addEdu" data-i18n="builder.add">＋ Add</button>
+        </div>
+        <div id="eduList"></div>
+
+        <div class="f-head">
+          <span class="f-label" data-i18n="builder.actLabel">Activities</span>
+          <button class="add-btn" id="addAct" data-i18n="builder.add">＋ Add</button>
+        </div>
+        <div id="actList"></div>
+
+        <label class="f-label" for="bHobbies" data-i18n="builder.hobbyLabel">Hobbies</label>
+        <input type="text" id="bHobbies" data-i18n-placeholder="builder.hobbyHolder" placeholder="Chess, badminton, photography…">
+
+        <button class="btn btn-primary btn-wide" id="bGenerate" data-i18n="builder.generate">⬇ Generate editable DOCX</button>
+        <p class="panel-note" data-i18n="builder.privacy">Everything happens in your browser — nothing is uploaded, nothing is stored.</p>
+      </div>
+
+      <!-- live preview -->
+      <div class="builder-preview-wrap">
+        <span class="f-label" data-i18n="builder.preview">Live preview</span>
+        <div class="paper" id="paper">
+          <div class="paper-head">
+            <div class="paper-photo" data-i18n="builder.photoSlot">PHOTO</div>
+            <div class="paper-blanks">
+              <span data-i18n="builder.fName">Name ____________</span>
+              <span data-i18n="builder.fGender">Gender __________</span>
+              <span data-i18n="builder.fPhone">Phone ___________</span>
+              <span data-i18n="builder.fEmail">Email ___________</span>
+              <span data-i18n="builder.fAddr">Address _________</span>
+            </div>
+          </div>
+          <div id="paperBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p class="footer-title" data-i18n="foot.title">Fairness by Design</p>
+      <p class="footer-sub" data-i18n="foot.sub">Ethical, explainable and accountable AI in automated recruitment.</p>
+    </div>
+    <div>
+      <p class="footer-label" data-i18n="foot.team">Team</p>
+      <p>Zihan Wang · 2693668</p>
+      <p>Yibo Xu · 2686327</p>
+      <p>Zhuoyi Ye · 2686467</p>
+    </div>
+    <div>
+      <p class="footer-label" data-i18n="foot.course">Course</p>
+      <p>PSP405TC · XJTLU</p>
+      <p>Semester 1, 2026–27</p>
+      <p><a href="https://github.com/" target="_blank" rel="noopener" data-i18n="foot.repo">View source on GitHub ↗</a></p>
+    </div>
+  </div>
+  <p class="footer-fine" data-i18n="foot.fine">Educational project. Data: Bickel et al., Science (1975); Barnsley et al., CAHPER (1985). This site stores nothing and tracks no one.</p>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/docx-zip.js"></script>
+<script src="js/docx-template.js"></script>
+<script src="js/main.js"></script>
+<script src="js/cv.js"></script>
+<script src="js/builder.js"></script>
+</body>
+</html>
